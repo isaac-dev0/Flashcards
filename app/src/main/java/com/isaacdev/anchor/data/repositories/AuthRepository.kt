@@ -1,9 +1,6 @@
-package com.isaacdev.anchor.data.manager
+package com.isaacdev.anchor.data.repositories
 
-/**
- * Manages authentication with Supabase.
- */
-interface AuthManager {
+interface AuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>
     suspend fun signup(email: String, password: String): Result<Unit>
     suspend fun logout()

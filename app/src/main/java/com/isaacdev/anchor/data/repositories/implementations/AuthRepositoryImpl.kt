@@ -1,8 +1,8 @@
-package com.isaacdev.anchor.data.repository
+package com.isaacdev.anchor.data.repositories.implementations
 
 import android.util.Log
-import com.isaacdev.anchor.data.SupabaseClient
-import com.isaacdev.anchor.data.manager.AuthManager
+import com.isaacdev.anchor.data.database.SupabaseClient
+import com.isaacdev.anchor.data.repositories.AuthRepository
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.user.UserInfo
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AuthRepository: AuthManager {
+class AuthRepositoryImpl: AuthRepository {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()

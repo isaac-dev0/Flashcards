@@ -27,7 +27,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.isaacdev.anchor.data.repository.AuthState
+import com.isaacdev.anchor.data.repositories.implementations.AuthState
 import com.isaacdev.anchor.presentation.screen.HomeScreen
 import com.isaacdev.anchor.presentation.screen.auth.AuthScreen
 import com.isaacdev.anchor.presentation.screen.decks.DeckCreateScreen

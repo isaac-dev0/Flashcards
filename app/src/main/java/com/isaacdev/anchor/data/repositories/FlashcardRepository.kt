@@ -1,8 +1,8 @@
-package com.isaacdev.anchor.data.manager
+package com.isaacdev.anchor.data.repositories
 
-import com.isaacdev.anchor.data.model.Flashcard
+import com.isaacdev.anchor.domain.models.Flashcard
 
-interface FlashcardManager {
+interface FlashcardRepository {
     suspend fun createFlashcard(flashcard: Flashcard): Result<Flashcard>
     suspend fun getFlashcard(id: String, deckId: String): Flashcard?
     suspend fun getFlashcards(deckId: String): List<Flashcard>

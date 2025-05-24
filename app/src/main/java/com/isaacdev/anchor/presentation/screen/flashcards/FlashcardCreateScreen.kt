@@ -32,8 +32,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardCreateViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.isaacdev.anchor.data.model.Flashcard
-import com.isaacdev.anchor.domain.enums.Difficulty
+import com.isaacdev.anchor.domain.models.Flashcard
+import com.isaacdev.anchor.domain.models.enums.Difficulty
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.UUID

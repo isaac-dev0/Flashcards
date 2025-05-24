@@ -31,9 +31,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.isaacdev.anchor.data.repository.AuthState
+import com.isaacdev.anchor.data.repositories.implementations.AuthState
 import com.isaacdev.anchor.presentation.viewmodel.auth.AuthViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun AuthScreen(

@@ -2,23 +2,22 @@ package com.isaacdev.anchor.presentation.viewmodel.decks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.isaacdev.anchor.data.repository.DeckRepository
+import com.isaacdev.anchor.data.repositories.DeckRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DeckListViewModel: ViewModel() {
+class DeckListViewModel @Inject constructor(
+    private val deckRepository: DeckRepository
+): ViewModel() {
 
-    private val deckRepository = DeckRepository()
+    private val _uiState = MutableStateFlow(DeckCreateUiState())
+    val uiState: StateFlow<DeckCreateUiState> = _uiState.asStateFlow()
 
     val decks = deckRepository.decks
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow("")
-    val errorMessage: StateFlow<String> = _errorMessage.asStateFlow()
 
     init {
         loadDecks()
@@ -26,15 +25,27 @@ class DeckListViewModel: ViewModel() {
 
     fun loadDecks() {
         viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                deckRepository.getDecks()
-                _errorMessage.value = ""
-            } catch (e: Exception) {
-                _errorMessage.value = e.message ?: "Error loading decks: ${e.message}"
-            } finally {
-                _isLoading.value = false
-            }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
+            deckRepository.getDecks()
+                .onSuccess { _uiState.update { it.copy(isLoading = false, errorMessage = null) } }
+                .onFailure { error -> _uiState.update { it.copy(isLoading = false, errorMessage = error.message) } }
         }
     }
+
+    fun deleteDeck(deckId: String) {
+        viewModelScope.launch {
+            deckRepository.deleteDeck(deckId)
+                .onFailure { error -> _uiState.update { it.copy(errorMessage = error.message) } }
+        }
+    }
+
+    fun clearError() {
+        _uiState.update { it.copy(errorMessage = null) }
+    }
 }
+
+data class DeckListUiState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = ""
+)

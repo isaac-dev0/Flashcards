@@ -2,8 +2,8 @@ package com.isaacdev.anchor.presentation.viewmodel.flashcards
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.isaacdev.anchor.data.model.Flashcard
-import com.isaacdev.anchor.data.repository.FlashcardRepository
+import com.isaacdev.anchor.domain.models.Flashcard
+import com.isaacdev.anchor.data.repositories.implementations.FlashcardRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class FlashcardCreateViewModel: ViewModel() {
 
-    private val flashcardRepository = FlashcardRepository()
+    private val flashcardRepository = FlashcardRepositoryImpl()
 
     private val _flashcard = MutableStateFlow<Flashcard?>(null)
     val flashcard: StateFlow<Flashcard?> = _flashcard.asStateFlow()

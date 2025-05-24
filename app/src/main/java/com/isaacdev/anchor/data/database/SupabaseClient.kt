@@ -1,4 +1,4 @@
-package com.isaacdev.anchor.data
+package com.isaacdev.anchor.data.database
 
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient

@@ -3,14 +3,14 @@ package com.isaacdev.anchor.presentation.viewmodel.auth
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.isaacdev.anchor.data.repository.AuthRepository
+import com.isaacdev.anchor.data.repositories.implementations.AuthRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepositoryImpl
 ): ViewModel() {
 
     val authState = authRepository.authState
