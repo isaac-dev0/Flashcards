@@ -16,7 +16,7 @@ import javax.inject.Inject
 class DeckCreateViewModel @Inject constructor(
     private val createDeckUseCase: CreateDeckUseCase,
     private val deckRepository: DeckRepository,
-    private val authRepository: AuthRepository
+    authRepository: AuthRepository
 ): ViewModel() {
 
     val user = authRepository.currentUser

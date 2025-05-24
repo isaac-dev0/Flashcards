@@ -115,7 +115,7 @@ fun DeckCreateScreen(
             supportingText = descriptionError?.let { { Text(it) } },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(vertical = 8.dp),
             minLines = 3,
             maxLines = 5,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
@@ -124,7 +124,7 @@ fun DeckCreateScreen(
         Text(
             text = "${deckDescription.length}/512",
             style = MaterialTheme.typography.bodySmall,
-            color = if (deckDescription.length > 500) MaterialTheme.colorScheme.error
+            color = if (deckDescription.length > 512) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.End)
         )

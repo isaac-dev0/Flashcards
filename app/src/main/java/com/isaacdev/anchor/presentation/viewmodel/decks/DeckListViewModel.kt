@@ -14,8 +14,8 @@ class DeckListViewModel @Inject constructor(
     private val deckRepository: DeckRepository
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(DeckCreateUiState())
-    val uiState: StateFlow<DeckCreateUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(DeckListUiState())
+    val uiState: StateFlow<DeckListUiState> = _uiState.asStateFlow()
 
     val decks = deckRepository.decks
 

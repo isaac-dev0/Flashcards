@@ -5,7 +5,7 @@ import com.isaacdev.anchor.domain.models.Deck
 import javax.inject.Inject
 
 /**
- * Validator for Deck objects.
+ * Validator for [Deck] objects.
  *
  * This class provides methods to validate the properties of a Deck object,
  * ensuring that they meet the required criteria before being processed or persisted.

@@ -15,10 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(
-    onNavigateToDeckList: () -> Unit,
-    onNavigateToFlashcardList: () -> Unit,
-) {
+fun HomeScreen(onNavigateToDeckList: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,14 +34,6 @@ fun HomeScreen(
             onClick = onNavigateToDeckList
         ) {
             Text("View Decks")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = onNavigateToFlashcardList
-        ) {
-            Text("View All Flashcards")
         }
     }
 }
