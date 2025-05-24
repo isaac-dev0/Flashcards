@@ -1,6 +1,7 @@
 package com.isaacdev.anchor.presentation.navigation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -84,9 +85,6 @@ fun ScreenController(
                 HomeScreen(
                     onNavigateToDeckList = {
                         navController.navigate(Screen.DeckList.route)
-                    },
-                    onNavigateToFlashcardList = {
-                        navController.navigate(Screen.FlashcardList.route)
                     }
                 )
             }
@@ -100,6 +98,9 @@ fun ScreenController(
                         navController.navigate(
                             Screen.FlashcardList.route + "?deckId=$deckId"
                         )
+                    },
+                    onEditDeck = {
+                        navController.navigate(Screen.CreateDeck.route)
                     }
                 )
             }
@@ -107,6 +108,9 @@ fun ScreenController(
             composable(Screen.CreateDeck.route) {
                 DeckCreateScreen(
                     onDeckCreated = {
+                        navController.popBackStack()
+                    },
+                    onNavigateBack = {
                         navController.popBackStack()
                     }
                 )
@@ -117,8 +121,6 @@ fun ScreenController(
                 arguments = listOf(
                     navArgument("deckId") {
                         type = NavType.StringType
-                        nullable = true
-                        defaultValue = null
                     }
                 )
             ) { backStackEntry ->
@@ -132,6 +134,9 @@ fun ScreenController(
                         navController.navigate(
                             Screen.Flashcard.route.replace("{id}", flashcardId)
                         )
+                    },
+                    onEditFlashcard = {
+                        navController.navigate("flashcard/create/$deckId")
                     }
                 )
             }
@@ -149,25 +154,13 @@ fun ScreenController(
                     deckId = deckId,
                     onFlashcardCreated = {
                         navController.popBackStack()
+                    },
+                    onNavigateBack = {
+                        navController.popBackStack()
                     }
                 )
             }
-//
-//            composable(
-//                route = "flashcard/{id}/edit",
-//                arguments = listOf(
-//                    navArgument("id") { type = NavType.StringType }
-//                )
-//            ) { backStackEntry ->
-//                val flashcardId = backStackEntry.arguments?.getString("id") ?: ""
-//                EditFlashcardScreen(
-//                    flashcardId = flashcardId,
-//                    onFlashcardUpdated = {
-//                        navController.popBackStack()
-//                    }
-//                )
-//            }
-//
+
             composable(
                 route = "flashcard/{deckId}/{id}",
                 arguments = listOf(
@@ -178,14 +171,7 @@ fun ScreenController(
                 val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
                 val flashcardId = backStackEntry.arguments?.getString("id") ?: return@composable
 
-                FlashcardScreen(
-                    flashcardId = flashcardId,
-                    deckId = deckId,
-                    onNavigateToEditFlashcard = {
-                        navController.navigate("flashcard/$deckId/$flashcardId/edit")
-                    },
-                    onNavigateBack = { navController.popBackStack() }
-                )
+                FlashcardScreen(flashcardId = flashcardId, deckId = deckId)
             }
         }
     }
@@ -202,16 +188,26 @@ fun AppTopBar(
     TopAppBar(
         title = {
             Row(
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { onBack() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Previous Page"
-                    )
+                Column {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Previous Page"
+                        )
+                    }
+                    Text(currentScreen.title)
                 }
-                Text(currentScreen.title)
+                Column {
+                    IconButton(onClick = { onSignOut() }) {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Sign Out"
+                        )
+                    }
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

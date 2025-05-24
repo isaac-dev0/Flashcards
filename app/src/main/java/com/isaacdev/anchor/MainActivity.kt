@@ -11,12 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.isaacdev.anchor.presentation.navigation.ScreenController
 import com.isaacdev.anchor.presentation.theme.AnchorTheme
 import com.isaacdev.anchor.presentation.viewmodel.auth.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,14 +37,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AnchorApp(authViewModel: AuthViewModel = viewModel()) {
+fun AnchorApp(authViewModel: AuthViewModel = hiltViewModel()) {
 
     val navController = rememberNavController()
-    val authState by authViewModel.authState.collectAsState()
+    val uiState by authViewModel.uiState.collectAsState()
 
     ScreenController(
         navController = navController,
-        authState = authState,
+        authState = uiState.authState,
         onSignOut = {
             authViewModel.signOut()
         }
