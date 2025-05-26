@@ -44,7 +44,7 @@ fun EmptyFlashcardList(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = if (hasError) "Failed to load flashcards" else "No decks yet",
+            text = if (hasError) "Failed to load flashcards" else "No flashcards yet",
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center
         )
@@ -76,7 +76,7 @@ fun EmptyFlashcardList(
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Text("Create Deck")
+            Text("Create Flashcard")
         }
     }
 }

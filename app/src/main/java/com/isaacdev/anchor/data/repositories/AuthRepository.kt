@@ -5,6 +5,7 @@ import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthRepository {
+    val authState: StateFlow<AuthState>
     val currentUser: StateFlow<UserInfo?>
     suspend fun checkAuthStatus(): AuthState
     suspend fun signup(email: String, password: String): Result<Unit>

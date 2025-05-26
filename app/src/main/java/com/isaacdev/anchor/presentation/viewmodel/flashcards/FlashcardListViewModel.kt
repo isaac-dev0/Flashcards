@@ -3,6 +3,7 @@ package com.isaacdev.anchor.presentation.viewmodel.flashcards
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isaacdev.anchor.data.repositories.FlashcardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class FlashcardListViewModel @Inject constructor(
     private val flashcardRepository: FlashcardRepository
 ): ViewModel() {
@@ -18,11 +20,6 @@ class FlashcardListViewModel @Inject constructor(
     val uiState: StateFlow<FlashcardListUiState> = _uiState.asStateFlow()
 
     val flashcards = flashcardRepository.flashcards
-
-// TODO: Implement init to more efficiently load flashcards on click.
-//    init {
-//        loadFlashcards(deckId)
-//    }
 
     fun loadFlashcards(deckId: String) {
         viewModelScope.launch {

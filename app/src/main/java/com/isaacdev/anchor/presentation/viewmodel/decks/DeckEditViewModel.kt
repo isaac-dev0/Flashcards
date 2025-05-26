@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.isaacdev.anchor.data.repositories.AuthRepository
 import com.isaacdev.anchor.data.repositories.DeckRepository
 import com.isaacdev.anchor.domain.models.Deck
-import com.isaacdev.anchor.domain.usecases.CreateDeckUseCase
+import com.isaacdev.anchor.domain.usecases.EditDeckUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,16 +15,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DeckCreateViewModel @Inject constructor(
-    private val createDeckUseCase: CreateDeckUseCase,
+class DeckEditViewModel @Inject constructor(
+    private val editDeckUseCase: EditDeckUseCase,
     private val deckRepository: DeckRepository,
     authRepository: AuthRepository
 ): ViewModel() {
 
     val user = authRepository.currentUser
 
-    private val _uiState = MutableStateFlow(DeckCreateUiState())
-    val uiState: StateFlow<DeckCreateUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(DeckEditUiState())
+    val uiState: StateFlow<DeckEditUiState> = _uiState.asStateFlow()
 
     fun loadDeck(id: String) {
         viewModelScope.launch {
@@ -36,23 +36,11 @@ class DeckCreateViewModel @Inject constructor(
         }
     }
 
-    fun createDeck(title: String, description: String, onSuccess: () -> Unit) {
+    fun editDeck(id: String, title: String, description: String? = null, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            createDeckUseCase(title, description)
-                .onSuccess { deck -> _uiState.update { it.copy(deck = deck, isLoading = false, errorMessage = null) }
-                    onSuccess()
-                }
-                .onFailure { error -> _uiState.update { it.copy(isLoading = false, errorMessage = error.message) } }
-        }
-    }
-
-    fun editDeck(deck: Deck, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            deckRepository.editDeck(deck)
+            editDeckUseCase(id, title, description)
                 .onSuccess { deck -> _uiState.update { it.copy(deck = deck, isLoading = false, errorMessage = null) }
                     onSuccess()
                 }
@@ -65,7 +53,7 @@ class DeckCreateViewModel @Inject constructor(
     }
 }
 
-data class DeckCreateUiState(
+data class DeckEditUiState(
     val deck: Deck? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = ""

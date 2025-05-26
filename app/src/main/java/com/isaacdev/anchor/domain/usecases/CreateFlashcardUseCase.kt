@@ -16,13 +16,13 @@ class CreateFlashcardUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 
-    suspend operator fun invoke(question: String, answer: String, difficulty: Difficulty): Result<Flashcard> {
+    suspend operator fun invoke(deckId: String, question: String, answer: String, difficulty: Difficulty): Result<Flashcard> {
         val currentUser = authRepository.currentUser.value
             ?: return Result.failure(FlashcardException.ValidationFailed("User not authenticated"))
 
         val flashcard = Flashcard(
             id = UUID.randomUUID().toString(),
-            deckId = "",
+            deckId = deckId,
             question = question.trim(),
             answer = answer.trim(),
             difficulty = difficulty,

@@ -1,8 +1,10 @@
 package com.isaacdev.anchor.presentation.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -29,12 +33,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.isaacdev.anchor.data.repositories.implementations.AuthState
+import com.isaacdev.anchor.presentation.navigation.Screen.Companion.bottomNavItems
 import com.isaacdev.anchor.presentation.screen.HomeScreen
 import com.isaacdev.anchor.presentation.screen.auth.AuthScreen
 import com.isaacdev.anchor.presentation.screen.decks.DeckCreateScreen
+import com.isaacdev.anchor.presentation.screen.decks.DeckEditScreen
 import com.isaacdev.anchor.presentation.screen.decks.DeckListScreen
 import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardCreateScreen
+import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardEditScreen
 import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardListScreen
+import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardReviewScreen
 import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardScreen
 
 @Composable
@@ -45,6 +53,23 @@ fun ScreenController(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = getScreenFromBackStackEntry(navBackStackEntry)
+
+    LaunchedEffect(navController) {
+        snapshotFlow { authState }.collect { newState ->
+            if (newState is AuthState.LoggedIn && currentScreen == Screen.Auth) {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Auth.route) { inclusive = true }
+                }
+            } else if (newState is AuthState.LoggedOut) {
+                navController.navigate(Screen.Auth.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -100,7 +125,7 @@ fun ScreenController(
                         )
                     },
                     onEditDeck = {
-                        navController.navigate(Screen.CreateDeck.route)
+                        navController.navigate(Screen.EditDeck.route)
                     }
                 )
             }
@@ -128,26 +153,37 @@ fun ScreenController(
                 FlashcardListScreen(
                     deckId = deckId!!,
                     onCreateFlashcard = {
-                        navController.navigate("flashcard/create/$deckId")
+                        navController.navigate(
+                            Screen.CreateFlashcard.route
+                                .replace("{deckId}", deckId)
+                        )
                     },
                     onSelectedFlashcard = { flashcardId ->
                         navController.navigate(
-                            Screen.Flashcard.route.replace("{id}", flashcardId)
+                            Screen.Flashcard.route
+                                .replace("{deckId}", deckId)
+                                .replace("{id}", flashcardId)
                         )
                     },
-                    onEditFlashcard = {
-                        navController.navigate("flashcard/create/$deckId")
-                    }
+                    onEditFlashcard = { flashcardId ->
+                        navController.navigate(
+                            Screen.EditFlashcard.route
+                                .replace("{deckId}", deckId)
+                                .replace("{id}", flashcardId)
+                        )
+                    },
+                    onReview = {
+                        navController.navigate(
+                            Screen.FlashcardReview.route
+                                .replace("{deckId}", deckId)
+                        )
+                    },
                 )
             }
 
             composable(
-                route = "flashcard/create/{deckId}",
-                arguments = listOf(
-                    navArgument("deckId") {
-                        type = NavType.StringType
-                    }
-                )
+                route = Screen.CreateFlashcard.route,
+                arguments = listOf(navArgument("deckId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
                 FlashcardCreateScreen(
@@ -162,7 +198,7 @@ fun ScreenController(
             }
 
             composable(
-                route = "flashcard/{deckId}/{id}",
+                route = Screen.Flashcard.route,
                 arguments = listOf(
                     navArgument("deckId") { type = NavType.StringType },
                     navArgument("id") { type = NavType.StringType }
@@ -171,7 +207,59 @@ fun ScreenController(
                 val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
                 val flashcardId = backStackEntry.arguments?.getString("id") ?: return@composable
 
-                FlashcardScreen(flashcardId = flashcardId, deckId = deckId)
+                FlashcardScreen(deckId = deckId, flashcardId = flashcardId)
+            }
+
+            composable(
+                route = Screen.EditFlashcard.route,
+                arguments = listOf(
+                    navArgument("deckId") { type = NavType.StringType },
+                    navArgument("id") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
+                val flashcardId = backStackEntry.arguments?.getString("id") ?: return@composable
+                FlashcardEditScreen(
+                    flashcardId = flashcardId,
+                    deckId = deckId,
+                    onFlashcardEdited = {
+                        navController.popBackStack()
+                    },
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.EditDeck.route,
+                arguments = listOf(
+                    navArgument("deckId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
+                DeckEditScreen(
+                    deckId = deckId,
+                    onDeckEdited = {
+                        navController.popBackStack()
+                    },
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.FlashcardReview.route,
+                arguments = listOf(navArgument("deckId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val deckId = backStackEntry.arguments?.getString("deckId") ?: return@composable
+                FlashcardReviewScreen(
+                    deckId = deckId,
+                    onReviewComplete = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }
@@ -189,9 +277,12 @@ fun AppTopBar(
         title = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     IconButton(onClick = { onBack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -200,12 +291,14 @@ fun AppTopBar(
                     }
                     Text(currentScreen.title)
                 }
-                Column {
-                    IconButton(onClick = { onSignOut() }) {
-                        Icon(
-                            imageVector = Icons.Default.ExitToApp,
-                            contentDescription = "Sign Out"
-                        )
+                if (isLoggedIn) {
+                    Column {
+                        IconButton(onClick = { onSignOut() }) {
+                            Icon(
+                                imageVector = Icons.Default.ExitToApp,
+                                contentDescription = "Sign Out"
+                            )
+                        }
                     }
                 }
             }
@@ -213,17 +306,7 @@ fun AppTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        actions = {
-            if (isLoggedIn) {
-                IconButton(onClick = onSignOut) {
-                    Icon(
-                        imageVector = Icons.Default.ExitToApp,
-                        contentDescription = "Sign Out"
-                    )
-                }
-            }
-        }
+        )
     )
 }
 
@@ -233,7 +316,7 @@ fun AppBottomNavigation(
     currentRoute: String?
 ) {
     NavigationBar {
-        Screen.bottomNavItems.forEach { screen ->
+        bottomNavItems.filterNotNull().forEach { screen ->
             NavigationBarItem(
                 icon = {
                     screen.icon?.let { Icon(it, contentDescription = screen.title) }

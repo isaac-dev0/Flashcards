@@ -3,6 +3,7 @@ package com.isaacdev.anchor.presentation.viewmodel.decks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isaacdev.anchor.data.repositories.DeckRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class DeckListViewModel @Inject constructor(
     private val deckRepository: DeckRepository
 ): ViewModel() {

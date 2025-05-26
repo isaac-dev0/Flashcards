@@ -9,26 +9,26 @@ class AuthValidator @Inject constructor() {
             email.isBlank() -> Result.failure(
                 AuthException.ValidationFailed("Email cannot be empty")
             )
-            email.isEmailValid() -> Result.failure(
+            !email.isEmailValid() -> Result.failure(
                 AuthException.ValidationFailed("Invalid email format")
             )
             password.isBlank() -> Result.failure(
                 AuthException.ValidationFailed("Password cannot be empty")
             )
-            password.isPasswordValid() -> Result.failure(
-                AuthException.ValidationFailed("Invalid password format")
-            )
+//            !password.isPasswordValid() -> Result.failure(
+//                AuthException.ValidationFailed("Invalid password format")
+//            )
             else -> Result.success(Unit)
         }
     }
 }
 
 fun String.isEmailValid(): Boolean {
-    val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
-    return emailRegex.toRegex().matches(this)
+    val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+    return emailRegex.matches(this)
 }
 
-fun String.isPasswordValid(): Boolean {
-    val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
-    return passwordRegex.toRegex().matches(this)
-}
+//fun String.isPasswordValid(): Boolean {
+//    val passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"
+//    return passwordRegex.toRegex().matches(this)
+//}

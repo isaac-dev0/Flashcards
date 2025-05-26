@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.0.0"
+    kotlin("kapt")
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -53,6 +55,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.runtime.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,6 +79,7 @@ dependencies {
 
     // Hilt
     implementation(libs.androidx.hilt.navigation.compose)
-    annotationProcessor(libs.hilt.compiler)
+    kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.hilt.android)
 }

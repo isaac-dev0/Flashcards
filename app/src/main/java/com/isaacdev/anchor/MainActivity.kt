@@ -9,7 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
@@ -19,7 +21,7 @@ import com.isaacdev.anchor.presentation.viewmodel.auth.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,13 +40,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AnchorApp(authViewModel: AuthViewModel = hiltViewModel()) {
-
     val navController = rememberNavController()
-    val uiState by authViewModel.uiState.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
 
     ScreenController(
         navController = navController,
-        authState = uiState.authState,
+        authState = authState,
         onSignOut = {
             authViewModel.signOut()
         }

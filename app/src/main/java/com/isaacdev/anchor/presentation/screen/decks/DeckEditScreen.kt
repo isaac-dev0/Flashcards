@@ -26,7 +26,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,27 +36,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.isaacdev.anchor.presentation.viewmodel.decks.DeckCreateViewModel
+import com.isaacdev.anchor.presentation.viewmodel.decks.DeckEditViewModel
 
 @Composable
-fun DeckCreateScreen(
-    onDeckCreated: () -> Unit,
+fun DeckEditScreen(
+    deckId: String,
+    onDeckEdited: () -> Unit,
     onNavigateBack: () -> Unit,
-    viewModel: DeckCreateViewModel = hiltViewModel()
+    viewModel: DeckEditViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
 
     var deckTitle by remember { mutableStateOf("") }
     var deckDescription by remember { mutableStateOf("") }
     var titleError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(uiState.deck) {
-        uiState.deck?.let { deck ->
-            deckTitle = deck.title
-            deckDescription = deck.description.orEmpty()
-        }
-    }
 
     fun validateForm(): Boolean {
         titleError = when {
@@ -172,7 +166,7 @@ fun DeckCreateScreen(
             Button(
                 onClick = {
                     if (validateForm()) {
-                        viewModel.createDeck(deckTitle, deckDescription, onDeckCreated)
+                        viewModel.editDeck(deckId, deckTitle, deckDescription, onDeckEdited)
                     }
                 },
                 enabled = !uiState.isLoading,
@@ -184,7 +178,7 @@ fun DeckCreateScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Create Deck")
+                    Text("Update Deck")
                 }
             }
         }

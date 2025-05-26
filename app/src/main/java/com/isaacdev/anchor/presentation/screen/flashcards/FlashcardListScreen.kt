@@ -3,12 +3,15 @@ package com.isaacdev.anchor.presentation.screen.flashcards
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,6 +36,7 @@ fun FlashcardListScreen(
     onCreateFlashcard: () -> Unit,
     onSelectedFlashcard: (String) -> Unit,
     onEditFlashcard: (String) -> Unit,
+    onReview: (String) -> Unit,
     viewModel: FlashcardListViewModel = hiltViewModel()
 ) {
 
@@ -73,6 +77,15 @@ fun FlashcardListScreen(
                             onDeleteFlashcard = viewModel::deleteFlashcard
                         )
                     }
+                }
+                Button(
+                    onClick = { onReview(deckId) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+                ) {
+                    Text("Review")
                 }
             }
         }

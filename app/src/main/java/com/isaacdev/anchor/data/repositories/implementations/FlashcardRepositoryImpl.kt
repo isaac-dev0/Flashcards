@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FlashcardRepositoryImpl @Inject constructor(
-    private val database: SupabaseClient,
+    private val supabaseClient: io.github.jan.supabase.SupabaseClient,
     private val flashcardValidator: FlashcardValidator,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ): FlashcardRepository {
@@ -28,12 +28,14 @@ class FlashcardRepositoryImpl @Inject constructor(
 
     private val table = "flashcards"
 
+    private val database = supabaseClient
+
     override suspend fun createFlashcard(flashcard: Flashcard): Result<Flashcard> = withContext(ioDispatcher) {
         try {
             flashcardValidator.validateFlashcard(flashcard).getOrElse { error ->
                 return@withContext Result.failure(error)
             }
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .insert(flashcard) { select() }
                 .decodeSingle<Flashcard>()
             _flashcards.update { currentFlashcards -> currentFlashcards + response }
@@ -49,7 +51,7 @@ class FlashcardRepositoryImpl @Inject constructor(
             if (id.isBlank()) {
                 return@withContext Result.failure(FlashcardException.InvalidId("Flashcard ID cannot be empty."))
             }
-            val flashcard = database.client.from(table)
+            val flashcard = database.from(table)
                 .select { filter {
                     eq("id", id)
                     eq("deck_id", deckId)
@@ -64,7 +66,7 @@ class FlashcardRepositoryImpl @Inject constructor(
 
     override suspend fun getFlashcards(deckId: String): Result<List<Flashcard>> = withContext(ioDispatcher) {
         try {
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .select { filter { eq("deck_id", deckId) } }
                 .decodeList<Flashcard>()
             _flashcards.value = response
@@ -80,11 +82,17 @@ class FlashcardRepositoryImpl @Inject constructor(
             flashcardValidator.validateFlashcard(flashcard).getOrElse { error ->
                 return@withContext Result.failure(error)
             }
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .update(flashcard) {
                     filter { eq("id", flashcard.id) }
+                    select()
                 }
-                .decodeSingle<Flashcard>()
+                .decodeSingleOrNull<Flashcard>()
+
+            if (response == null) {
+                return@withContext Result.failure(FlashcardException.UpdateFailed("Flashcard not found"))
+            }
+
             _flashcards.update { currentFlashcards ->
                 currentFlashcards.map { if (it.id == flashcard.id) response else it }
             }
@@ -101,7 +109,7 @@ class FlashcardRepositoryImpl @Inject constructor(
                 return@withContext Result.failure(FlashcardException.InvalidId("Flashcard ID cannot be empty."))
             }
 
-            database.client.from(table)
+            database.from(table)
                 .delete { filter { eq("id", id) } }
 
             _flashcards.update { currentFlashcards -> currentFlashcards.filter { it.id != id } }

@@ -1,4 +1,4 @@
-package com.isaacdev.anchor.presentation.screen.decks
+package com.isaacdev.anchor.presentation.screen.flashcards
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,40 +41,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.isaacdev.anchor.presentation.viewmodel.decks.DeckCreateViewModel
+import com.isaacdev.anchor.domain.models.enums.Difficulty
+import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardEditViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeckCreateScreen(
-    onDeckCreated: () -> Unit,
+fun FlashcardEditScreen(
+    flashcardId: String,
+    deckId: String,
+    onFlashcardEdited: () -> Unit,
     onNavigateBack: () -> Unit,
-    viewModel: DeckCreateViewModel = hiltViewModel()
+    viewModel: FlashcardEditViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsState()
 
-    var deckTitle by remember { mutableStateOf("") }
-    var deckDescription by remember { mutableStateOf("") }
-    var titleError by remember { mutableStateOf<String?>(null) }
-    var descriptionError by remember { mutableStateOf<String?>(null) }
+    var flashcardQuestion by remember { mutableStateOf("") }
+    var flashcardAnswer by remember { mutableStateOf("") }
+    var difficulty by remember { mutableStateOf(Difficulty.EASY) }
+    var questionError by remember { mutableStateOf<String?>(null) }
+    var answerError by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(uiState.deck) {
-        uiState.deck?.let { deck ->
-            deckTitle = deck.title
-            deckDescription = deck.description.orEmpty()
+    var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(flashcardId, deckId) {
+        viewModel.loadFlashcard(flashcardId, deckId)
+    }
+
+    LaunchedEffect(uiState.flashcard) {
+        uiState.flashcard?.let {
+            flashcardQuestion = it.question
+            flashcardAnswer = it.answer
+            difficulty = it.difficulty
         }
     }
 
     fun validateForm(): Boolean {
-        titleError = when {
-            deckTitle.isBlank() -> "Title cannot be empty"
-            deckTitle.length > 100 -> "Title cannot exceed 100 characters"
+        questionError = when {
+            flashcardQuestion.isBlank() -> "Question cannot be empty"
+            flashcardQuestion.length > 100 -> "Question cannot exceed 100 characters"
             else -> null
         }
-        descriptionError = when {
-            deckDescription.length > 512 -> "Description cannot exceed 512 characters"
+        answerError = when {
+            flashcardAnswer.isBlank() -> "Answer cannot be empty"
+            flashcardAnswer.length > 512 -> "Answer cannot exceed 512 characters"
             else -> null
         }
-
-        return titleError == null && descriptionError == null
+        return questionError == null && answerError == null
     }
 
     Column(
@@ -80,14 +97,14 @@ fun DeckCreateScreen(
             .verticalScroll(rememberScrollState())
     ) {
         OutlinedTextField(
-            value = deckTitle,
+            value = flashcardQuestion,
             onValueChange = {
-                deckTitle = it
-                if (titleError != null) titleError = null
+                flashcardQuestion = it
+                if (questionError != null) questionError = null
             },
-            label = { Text("Deck Name") },
-            isError = titleError != null,
-            supportingText = titleError?.let { { Text(it) } },
+            label = { Text("Question") },
+            isError = questionError != null,
+            supportingText = questionError?.let { { Text(it) } },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
@@ -96,29 +113,66 @@ fun DeckCreateScreen(
         )
 
         OutlinedTextField(
-            value = deckDescription,
+            value = flashcardAnswer,
             onValueChange = {
-                deckDescription = it
-                if (descriptionError != null) descriptionError = null
+                flashcardAnswer = it
+                if (answerError != null) answerError = null
             },
-            label = { Text("Description (Optional)") },
-            isError = descriptionError != null,
-            supportingText = descriptionError?.let { { Text(it) } },
+            label = { Text("Answer") },
+            isError = answerError != null,
+            supportingText = answerError?.let { { Text(it) } },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             minLines = 3,
             maxLines = 5,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
         Text(
-            text = "${deckDescription.length}/512",
+            text = "${flashcardAnswer.length}/512",
             style = MaterialTheme.typography.bodySmall,
-            color = if (deckDescription.length > 512) MaterialTheme.colorScheme.error
+            color = if (flashcardAnswer.length > 512) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.align(Alignment.End)
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = difficulty.name,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Difficulty") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                Difficulty.entries.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption.name) },
+                        onClick = {
+                            difficulty = selectionOption
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -172,7 +226,16 @@ fun DeckCreateScreen(
             Button(
                 onClick = {
                     if (validateForm()) {
-                        viewModel.createDeck(deckTitle, deckDescription, onDeckCreated)
+                        uiState.flashcard?.id?.let { id ->
+                            viewModel.editFlashcard(
+                                id = id,
+                                deckId = deckId,
+                                question = flashcardQuestion.trim(),
+                                answer = flashcardAnswer.trim(),
+                                difficulty = difficulty,
+                                onSuccess = onFlashcardEdited
+                            )
+                        }
                     }
                 },
                 enabled = !uiState.isLoading,
@@ -184,7 +247,7 @@ fun DeckCreateScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Create Deck")
+                    Text("Update Flashcard")
                 }
             }
         }

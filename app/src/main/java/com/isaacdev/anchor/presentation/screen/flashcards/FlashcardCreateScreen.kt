@@ -35,7 +35,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,24 +42,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardCreateViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.isaacdev.anchor.domain.models.Flashcard
 import com.isaacdev.anchor.domain.models.enums.Difficulty
-import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardCreateScreen(
-    flashcardId: String? = null,
     deckId: String,
     onFlashcardCreated: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: FlashcardCreateViewModel = hiltViewModel()
 ) {
 
-    val isEditMode = flashcardId != null
     val uiState by viewModel.uiState.collectAsState()
 
     var flashcardQuestion by remember { mutableStateOf("") }
@@ -71,12 +63,6 @@ fun FlashcardCreateScreen(
     var difficultyError by remember { mutableStateOf<String?>(null) }
 
     var expanded by remember { mutableStateOf(false) }
-
-    LaunchedEffect(flashcardId) {
-        if (isEditMode && flashcardId != null) {
-            viewModel.loadFlashcard(flashcardId, deckId)
-        }
-    }
 
     LaunchedEffect(uiState.flashcard) {
         uiState.flashcard?.let {
@@ -99,7 +85,7 @@ fun FlashcardCreateScreen(
         }
         difficultyError = null
 
-        return questionError == null && answerError == null && difficultyError == null
+        return questionError == null && answerError == null
     }
 
     Column(
@@ -155,7 +141,6 @@ fun FlashcardCreateScreen(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
             modifier = Modifier
-                .padding(16.dp)
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
@@ -239,16 +224,7 @@ fun FlashcardCreateScreen(
             Button(
                 onClick = {
                     if (validateForm()) {
-                        if (isEditMode && uiState.flashcard != null) {
-                            val updatedFlashcard = uiState.flashcard!!.copy(
-                                question = flashcardQuestion.trim(),
-                                answer = flashcardAnswer.trim(),
-                                difficulty = difficulty
-                            )
-                            viewModel.editFlashcard(updatedFlashcard, onFlashcardCreated)
-                        } else {
-                            viewModel.createFlashcard(flashcardQuestion, flashcardAnswer, difficulty, onFlashcardCreated)
-                        }
+                        viewModel.createFlashcard(deckId, flashcardQuestion, flashcardAnswer, difficulty, onFlashcardCreated)
                     }
                 },
                 enabled = !uiState.isLoading,
@@ -260,7 +236,7 @@ fun FlashcardCreateScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(if (isEditMode) "Update Flashcard" else "Create Flashcard")
+                    Text("Create Flashcard")
                 }
             }
         }

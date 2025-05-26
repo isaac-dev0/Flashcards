@@ -2,6 +2,7 @@ package com.isaacdev.anchor.domain.validators
 
 import com.isaacdev.anchor.domain.exceptions.DeckException
 import com.isaacdev.anchor.domain.models.Flashcard
+import javax.inject.Inject
 
 /**
  * Validator class for [Flashcard] objects.
@@ -9,7 +10,7 @@ import com.isaacdev.anchor.domain.models.Flashcard
  * This class provides methods to validate the properties of a Flashcard,
  * ensuring they meet specific criteria (e.g., not blank, within length limits).
  */
-class FlashcardValidator {
+class FlashcardValidator @Inject constructor() {
     fun validateFlashcard(flashcard: Flashcard): Result<Unit> {
         return when {
             flashcard.question.isBlank() -> Result.failure(

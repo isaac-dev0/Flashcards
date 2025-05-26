@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DeckRepositoryImpl @Inject constructor(
-    private val database: SupabaseClient,
+    private val supabaseClient: io.github.jan.supabase.SupabaseClient,
     private val deckValidator: DeckValidator,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ): DeckRepository {
@@ -29,12 +29,14 @@ class DeckRepositoryImpl @Inject constructor(
 
     private val table = "decks"
 
+    private val database = supabaseClient
+
     override suspend fun createDeck(deck: Deck): Result<Deck> = withContext(ioDispatcher) {
         try {
             deckValidator.validateDeck(deck).getOrElse { error ->
                 return@withContext Result.failure(error)
             }
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .insert(deck) { select() }
                 .decodeSingle<Deck>()
             _decks.update { currentDecks -> currentDecks + response }
@@ -50,7 +52,7 @@ class DeckRepositoryImpl @Inject constructor(
             if (id.isBlank()) {
                 return@withContext Result.failure(DeckException.InvalidId("Deck ID cannot be empty."))
             }
-            val deck = database.client.from(table)
+            val deck = database.from(table)
                 .select { filter { eq("id", id) } }
                 .decodeSingle<Deck>()
             Result.success(deck)
@@ -62,7 +64,7 @@ class DeckRepositoryImpl @Inject constructor(
 
     override suspend fun getDecks(): Result<List<Deck>> = withContext(ioDispatcher) {
         try {
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .select()
                 .decodeList<Deck>()
             _decks.value = response
@@ -78,7 +80,7 @@ class DeckRepositoryImpl @Inject constructor(
             deckValidator.validateDeck(deck).getOrElse { error ->
                 return@withContext Result.failure(error)
             }
-            val response = database.client.from(table)
+            val response = database.from(table)
                 .update(deck) {
                     filter { eq("id", deck.id) }
                 }
@@ -99,7 +101,7 @@ class DeckRepositoryImpl @Inject constructor(
                 return@withContext Result.failure(DeckException.InvalidId("Deck ID cannot be empty."))
             }
 
-            database.client.from(table)
+            database.from(table)
                 .delete { filter { eq("id", id) } }
 
             _decks.update { currentDecks -> currentDecks.filter { it.id != id } }
