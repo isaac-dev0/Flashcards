@@ -5,6 +5,15 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Represents the different screens in the application.
+ *
+ * Each screen has a route, a title, and an optional icon.
+ *
+ * @property route The route of the screen. This is used for navigation.
+ * @property title The title of the screen. This is displayed in the app bar.
+ * @property icon The icon of the screen. This is displayed in the bottom navigation bar.
+ */
 sealed class Screen(
     val route: String,
     val title: String,
@@ -22,6 +31,10 @@ sealed class Screen(
     data object FlashcardList: Screen("flashcards", "Flashcards")
     data object Flashcard: Screen("flashcard/view/{deckId}/{id}", "Flashcard")
 
+    /**
+     * Companion object for the Screen sealed class.
+     * Provides utility functions related to screen navigation.
+     */
     companion object {
         fun fromRoute(route: String): Screen {
             return when {

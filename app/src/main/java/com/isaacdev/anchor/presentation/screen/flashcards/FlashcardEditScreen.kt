@@ -44,6 +44,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.domain.models.enums.Difficulty
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardEditViewModel
 
+/**
+ * Composable function for the Flashcard Edit Screen.
+ *
+ * This screen allows users to edit an existing flashcard. It includes fields for the
+ * flashcard's question, answer, and difficulty level.
+ *
+ * The screen handles form validation to ensure that the question and answer fields are not empty
+ * and do not exceed character limits. It also displays error messages if validation fails or
+ * if there's an issue during the update process.
+ *
+ * The UI state, including the flashcard data, loading status, and error messages, is managed
+ * by the [FlashcardEditViewModel].
+ *
+ * Upon successful update, the [onFlashcardEdited] callback is invoked. The [onNavigateBack]
+ * callback is used for navigating back from the screen, typically when the "Cancel" button
+ * is pressed.
+ *
+ * @param flashcardId The ID of the flashcard to be edited.
+ * @param deckId The ID of the deck to which the flashcard belongs.
+ * @param onFlashcardEdited Callback function invoked when the flashcard is successfully edited.
+ * @param onNavigateBack Callback function invoked to navigate back from the screen.
+ * @param viewModel The [FlashcardEditViewModel] instance used to manage the screen's state and logic.
+ *                  Defaults to an instance provided by Hilt.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardEditScreen(

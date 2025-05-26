@@ -1,6 +1,5 @@
 package com.isaacdev.anchor.presentation.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +45,18 @@ import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardListScreen
 import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardReviewScreen
 import com.isaacdev.anchor.presentation.screen.flashcards.FlashcardScreen
 
+/**
+ * Composable function that controls the navigation and screen display of the application.
+ *
+ * This function observes the authentication state and navigates to the appropriate screen
+ * (AuthScreen for logged-out users, HomeScreen for logged-in users). It also sets up the
+ * top app bar and bottom navigation bar, and defines the navigation graph for all screens
+ * in the application.
+ *
+ * @param navController The NavHostController used for navigation.
+ * @param authState The current authentication state of the user.
+ * @param onSignOut A lambda function to be executed when the user signs out.
+ */
 @Composable
 fun ScreenController(
     navController: NavHostController,
@@ -266,6 +277,14 @@ fun ScreenController(
     }
 }
 
+/**
+ * Composable function that displays the top app bar.
+ *
+ * @param currentScreen The current screen being displayed.
+ * @param isLoggedIn A boolean indicating whether the user is logged in.
+ * @param onSignOut A lambda function to be executed when the user signs out.
+ * @param onBack A lambda function to be executed when the user navigates back.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
@@ -311,6 +330,16 @@ fun AppTopBar(
     )
 }
 
+/**
+ * Composable function for the application's bottom navigation bar.
+ *
+ * This function displays a [NavigationBar] with items defined in [bottomNavItems].
+ * It highlights the currently selected item based on the [currentRoute] and handles
+ * navigation when an item is clicked.
+ *
+ * @param navController The [NavHostController] used for navigation.
+ * @param currentRoute The route of the currently displayed screen, used to highlight the active navigation item.
+ */
 @Composable
 fun AppBottomNavigation(
     navController: NavHostController,
@@ -340,6 +369,16 @@ fun AppBottomNavigation(
     }
 }
 
+/**
+ * Determines the current [Screen] based on the provided [NavBackStackEntry].
+ *
+ * This function extracts the route from the back stack entry's destination.
+ * If the route is null or the back stack entry itself is null, it defaults to [Screen.Home].
+ * Otherwise, it uses [Screen.fromRoute] to convert the route string into a [Screen] object.
+ *
+ * @param backStackEntry The current [NavBackStackEntry] from the navigation controller.
+ * @return The [Screen] corresponding to the current route, or [Screen.Home] if the route is indeterminable.
+ */
 private fun getScreenFromBackStackEntry(backStackEntry: NavBackStackEntry?): Screen {
     val route = backStackEntry?.destination?.route ?: return Screen.Home
     return Screen.fromRoute(route)

@@ -38,6 +38,33 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.viewmodel.decks.DeckEditViewModel
 
+/**
+ * Composable function that displays the screen for editing an existing deck.
+ * It allows the user to modify the deck's title and description.
+ *
+ * This screen includes input fields for the deck title and description,
+ * with validation to ensure the data is within acceptable limits.
+ * It also displays error messages from the ViewModel if any occur during the
+ * deck editing process.
+ *
+ * The user can either update the deck with the new information or cancel the
+ * operation and navigate back.
+ *
+ * @param deckId The ID of the deck to be edited. This is used to fetch the
+ *               current deck details and to identify the deck when sending
+ *               update requests.
+ * @param onDeckEdited A callback function that is invoked when the deck has
+ *                     been successfully edited. This is typically used to
+ *                     trigger navigation or UI updates elsewhere in the app.
+ * @param onNavigateBack A callback function that is invoked when the user
+ *                       chooses to cancel the editing process or when the
+ *                       editing is complete and the screen should be dismissed.
+ *                       This is typically used to navigate back to the previous
+ *                       screen.
+ * @param viewModel An instance of [DeckEditViewModel] that provides the business
+ *                  logic and state management for editing a deck. It is
+ *                  injected by Hilt.
+ */
 @Composable
 fun DeckEditScreen(
     deckId: String,

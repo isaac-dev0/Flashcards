@@ -10,6 +10,16 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Use case for creating a new flashcard.
+ *
+ * This class encapsulates the business logic required to create a flashcard.
+ * It interacts with the [FlashcardRepository] to persist the flashcard data
+ * and the [AuthRepository] to ensure the user is authenticated.
+ *
+ * @property flashcardRepository The repository for flashcard data operations.
+ * @property authRepository The repository for authentication operations.
+ */
 @Singleton
 class CreateFlashcardUseCase @Inject constructor(
     private val flashcardRepository: FlashcardRepository,

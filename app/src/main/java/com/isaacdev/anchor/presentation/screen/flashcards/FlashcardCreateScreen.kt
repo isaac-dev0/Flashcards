@@ -44,6 +44,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardCreateViewModel
 import com.isaacdev.anchor.domain.models.enums.Difficulty
 
+/**
+ * Composable function for the Flashcard Create Screen.
+ *
+ * This screen allows users to create a new flashcard by providing a question, answer, and difficulty level.
+ * It includes input fields for the question and answer, a dropdown menu for selecting the difficulty,
+ * and buttons to create the flashcard or cancel the operation.
+ *
+ * The screen also handles form validation, displaying error messages for invalid input,
+ * and shows a loading indicator while the flashcard is being created.
+ *
+ * @param deckId The ID of the deck to which the new flashcard will be added.
+ * @param onFlashcardCreated Callback function invoked when a new flashcard is successfully created.
+ * @param onNavigateBack Callback function invoked when the user navigates back from the screen (e.g., by pressing "Cancel").
+ * @param viewModel The [FlashcardCreateViewModel] used to manage the state and logic of this screen.
+ *                  It is typically provided by Hilt.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlashcardCreateScreen(

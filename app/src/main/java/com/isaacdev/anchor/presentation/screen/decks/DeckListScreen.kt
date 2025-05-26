@@ -27,6 +27,19 @@ import com.isaacdev.anchor.presentation.fragment.decks.DeckItem
 import com.isaacdev.anchor.presentation.fragment.decks.EmptyDeckList
 import com.isaacdev.anchor.presentation.viewmodel.decks.DeckListViewModel
 
+/**
+ * Composable function that displays the list of decks.
+ *
+ * This screen shows a list of decks, allowing the user to select, edit, or delete them.
+ * It also provides a button to create a new deck.
+ * The screen handles loading states and error messages.
+ *
+ * @param onCreateDeck Callback invoked when the user wants to create a new deck.
+ * @param onSelectedDeck Callback invoked when a deck is selected, passing the deck's ID.
+ * @param onEditDeck Callback invoked when the user wants to edit a deck, passing the deck's ID.
+ * @param viewModel The [DeckListViewModel] used to manage the state and logic for this screen.
+ *                  It is provided by Hilt.
+ */
 @Composable
 fun DeckListScreen(
     onCreateDeck: () -> Unit,

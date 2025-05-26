@@ -8,6 +8,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 
+/**
+ * Dagger Hilt module that provides CoroutineDispatchers.
+ * This module allows for injecting different dispatchers for various tasks,
+ * facilitating testability and cleaner code structure.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatcherModule {

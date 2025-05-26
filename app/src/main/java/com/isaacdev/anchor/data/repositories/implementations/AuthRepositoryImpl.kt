@@ -19,6 +19,24 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Implementation of [AuthRepository] that handles user authentication
+ * using Supabase.
+ *
+ * This class manages the authentication state ([authState]) and the currently
+ * logged-in user's information ([currentUser]) as [StateFlow]s, allowing
+ * other parts of the application to observe changes.
+ *
+ * It uses an [AuthValidator] to validate user credentials before attempting
+ * authentication operations. All network operations are performed on the provided
+ * [ioDispatcher] to avoid blocking the main thread.
+ *
+ * Upon initialization, it immediately checks the current authentication status.
+ *
+ * @property supabaseClient The Supabase client instance used for authentication.
+ * @property authValidator The validator used to check email and password formats.
+ * @property ioDispatcher The coroutine dispatcher for performing I/O operations.
+ */
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val supabaseClient: io.github.jan.supabase.SupabaseClient,
@@ -40,6 +58,20 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Checks the current authentication status with the Supabase backend.
+     * It attempts to retrieve the current session. If a session exists,
+     * the user is considered logged in, and their information is updated.
+     * Otherwise, the user is considered logged out.
+     *
+     * This function updates the internal `_authState` and `_currentUser` StateFlows
+     * to reflect the current authentication state.
+     *
+     * In case of any error during the check (e.g., network issues),
+     * it defaults to a logged-out state and logs the error.
+     *
+     * @return The current [AuthState] (LoggedIn, LoggedOut).
+     */
     override suspend fun checkAuthStatus(): AuthState = withContext(ioDispatcher) {
         try {
             val session = auth.currentSessionOrNull()
@@ -59,6 +91,29 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Signs up a new user with the provided email and password.
+     *
+     * This function first validates the email and password using [authValidator].
+     * If validation fails, it returns a [Result.failure] with the validation error.
+     * Otherwise, it attempts to sign up the user using Supabase authentication.
+     *
+     * On successful signup:
+     * - Updates the [_currentUser] state with the new user information.
+     * - Sets the [_authState] to [AuthState.LoggedIn].
+     * - Returns [Result.success] with [Unit].
+     *
+     * On failure (e.g., [RestException] from Supabase or other unexpected errors):
+     * - Logs the error.
+     * - Sets the [_authState] to [AuthState.LoggedOut].
+     * - Returns [Result.failure] with an [AuthException.SignupFailed] containing the error message.
+     *
+     * This function is executed on the [ioDispatcher] to avoid blocking the main thread.
+     *
+     * @param email The email address of the user to sign up.
+     * @param password The password for the new user account.
+     * @return A [Result] indicating success ([Result.success] with [Unit]) or failure ([Result.failure] with an [AuthException]).
+     */
     override suspend fun signup(email: String, password: String): Result<Unit> = withContext(ioDispatcher) {
         try {
             _authState.value = AuthState.Loading
@@ -88,6 +143,22 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Logs in a user with the provided email and password.
+     *
+     * This function attempts to sign in the user using Supabase email authentication.
+     * Before attempting to sign in, it validates the email and password using [authValidator].
+     * If validation fails, it returns a [Result.failure] with the validation error.
+     *
+     * On successful login, it updates the [currentUser] and [authState] to [AuthState.LoggedIn].
+     * If any [RestException] or other [Exception] occurs during the login process,
+     * it logs the error, sets the [authState] to [AuthState.LoggedOut], and returns a
+     * [Result.failure] with an [AuthException.LoginFailed].
+     *
+     * @param email The user's email address.
+     * @param password The user's password.
+     * @return A [Result] indicating success (with [Unit]) or failure (with an [AuthException]).
+     */
     override suspend fun login(email: String, password: String): Result<Unit> = withContext(ioDispatcher) {
         try {
             _authState.value = AuthState.Loading
@@ -116,6 +187,14 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * Logs out the current user.
+     *
+     * This function signs out the user from Supabase, sets the current user to null,
+     * and updates the authentication state to [AuthState.LoggedOut].
+     *
+     * @return A [Result] indicating success ([Result.success] with [Unit]) or failure ([Result.failure] with an [AuthException.LogoutFailed]).
+     */
     override suspend fun logout(): Result<Unit> = withContext(ioDispatcher) {
         try {
             _authState.value = AuthState.Loading
@@ -132,6 +211,16 @@ class AuthRepositoryImpl @Inject constructor(
     }
 }
 
+/**
+ * Represents the different states of authentication.
+ *
+ * This sealed class is used to model the possible states of the authentication process,
+ * allowing for clear and type-safe handling of different authentication scenarios.
+ *
+ * - [Loading]: Indicates that an authentication operation is currently in progress.
+ * - [LoggedIn]: Indicates that the user is successfully authenticated.
+ * - [LoggedOut]: Indicates that the user is not authenticated or has been logged out.
+ */
 sealed class AuthState {
     data object Loading: AuthState()
     data object LoggedIn: AuthState()

@@ -29,6 +29,17 @@ import com.isaacdev.anchor.presentation.fragment.flashcards.FlashcardCard
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardReviewViewModel
 import kotlin.math.max
 
+/**
+ * A composable function that displays the flashcard review screen.
+ *
+ * This screen allows users to review flashcards from a specific deck.
+ * It displays the current flashcard, a timer, and buttons to mark the card as correct or incorrect.
+ * When the review is complete, it shows a completion message and a button to go back to the deck.
+ *
+ * @param deckId The ID of the deck to review.
+ * @param onReviewComplete A callback function to be invoked when the review is complete.
+ * @param viewModel The [FlashcardReviewViewModel] used to manage the state of the review.
+ */
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun FlashcardReviewScreen(

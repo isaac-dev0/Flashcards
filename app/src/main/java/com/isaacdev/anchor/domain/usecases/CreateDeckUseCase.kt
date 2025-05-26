@@ -9,6 +9,19 @@ import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Use case for creating a new deck.
+ *
+ * This class handles the business logic of creating a deck, including:
+ * - Ensuring a user is authenticated.
+ * - Generating a unique ID for the new deck.
+ * - Setting the creation timestamp.
+ * - Trimming whitespace from the title and description.
+ * - Persisting the deck using the [DeckRepository].
+ *
+ * @property deckRepository The repository for managing deck data.
+ * @property authRepository The repository for managing user authentication.
+ */
 @Singleton
 class CreateDeckUseCase @Inject constructor(
     private val deckRepository: DeckRepository,

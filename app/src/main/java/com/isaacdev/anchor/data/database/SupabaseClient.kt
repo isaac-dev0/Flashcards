@@ -4,6 +4,13 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 
+/**
+ * Object responsible for initializing and providing a Supabase client instance.
+ *
+ * This object configures the Supabase client with the necessary URL and API key,
+ * and installs the Postgrest and Auth plugins for database interaction and
+ * authentication respectively.
+ */
 object SupabaseClient {
 
     private const val SUPABASE_URL = "https://pgzdukytiwarbisqcpcl.supabase.co"

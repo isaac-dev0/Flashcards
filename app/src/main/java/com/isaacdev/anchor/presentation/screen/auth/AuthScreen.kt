@@ -42,9 +42,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.data.repositories.implementations.AuthState
 import com.isaacdev.anchor.domain.validators.isEmailValid
-import com.isaacdev.anchor.presentation.theme.AnchorTheme
 import com.isaacdev.anchor.presentation.viewmodel.auth.AuthViewModel
 
+/**
+ * Composable function for the Authentication Screen.
+ *
+ * This screen provides a user interface for both login and sign-up.
+ * It handles user input for email and password, validates the input,
+ * and communicates with the [AuthViewModel] to perform authentication actions.
+ *
+ * It displays error messages from the ViewModel and navigates to the home screen
+ * upon successful authentication.
+ *
+ * @param onNavigateToHome Callback function to be invoked when the user successfully logs in or signs up,
+ *                         triggering navigation to the home screen.
+ * @param viewModel An instance of [AuthViewModel] used to manage the authentication state and logic.
+ *                  Defaults to an instance provided by Hilt.
+ */
 @Composable
 fun AuthScreen(
     onNavigateToHome: () -> Unit,
@@ -210,5 +224,4 @@ fun AuthScreen(
             }
         }
     }
-
 }

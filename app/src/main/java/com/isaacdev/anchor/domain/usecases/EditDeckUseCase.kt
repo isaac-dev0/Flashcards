@@ -7,6 +7,16 @@ import com.isaacdev.anchor.domain.models.Deck
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+/**
+ * Use case for editing an existing deck.
+ *
+ * This class encapsulates the business logic required to edit a deck.
+ * It interacts with [DeckRepository] to persist the changes and [AuthRepository]
+ * to ensure the user is authenticated.
+ *
+ * @property deckRepository The repository for accessing and modifying deck data.
+ * @property authRepository The repository for accessing authentication information.
+ */
 class EditDeckUseCase @Inject constructor(
     private val deckRepository: DeckRepository,
     private val authRepository: AuthRepository

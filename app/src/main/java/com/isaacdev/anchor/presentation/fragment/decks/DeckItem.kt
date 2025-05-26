@@ -29,6 +29,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.isaacdev.anchor.domain.models.Deck
 
+/**
+ * Composable function that displays a single deck item in a list.
+ * It shows the deck's title and description (if available), and provides
+ * buttons to edit or delete the deck. Clicking on the card itself triggers
+ * the `onSelectedDeck` callback.
+ *
+ * A confirmation dialog is shown before deleting a deck.
+ *
+ * @param deck The [Deck] object to display.
+ * @param onSelectedDeck Callback function invoked when the deck item is clicked.
+ *                       It receives the ID of the selected deck.
+ * @param onEditDeck Callback function invoked when the edit button for the deck is clicked.
+ *                   It receives the ID of the deck to be edited.
+ * @param onDeleteDeck Callback function invoked when the delete button for the deck is clicked
+ *                     and confirmed in the dialog. It receives the ID of the deck to be deleted.
+ */
 @Composable
 fun DeckItem(
     deck: Deck,
@@ -42,7 +58,6 @@ fun DeckItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelectedDeck(deck.id) },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer

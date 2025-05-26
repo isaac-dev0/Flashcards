@@ -20,6 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/**
+ * A composable function that displays a message and buttons when there are no decks or an error occurs.
+ *
+ * @param onCreateDeck A lambda function to be invoked when the "Create Deck" button is clicked.
+ * @param onRetry A lambda function to be invoked when the "Try Again" button is clicked.
+ * @param hasError A boolean indicating whether an error has occurred.
+ * @param errorMessage An optional string containing the error message to display.
+ */
 @Composable
 fun EmptyDeckList(
     onCreateDeck: () -> Unit,

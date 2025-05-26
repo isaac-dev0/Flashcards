@@ -20,6 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import com.isaacdev.anchor.domain.models.Flashcard
 
+/**
+ * A Composable function that displays a flashcard with a flipping animation.
+ *
+ * This function takes a [Flashcard] object and a [Modifier] as input.
+ * It displays the question side of the flashcard by default. When the card is clicked,
+ * it flips over to reveal the answer side, and vice-versa.
+ *
+ * The flipping animation is achieved by rotating the card around its Y-axis.
+ * The `cameraDistance` property is used to give the card a 3D perspective effect during the flip.
+ *
+ * If the provided [flashcard] is null, it displays a "No card to display." message.
+ *
+ * @param flashcard The [Flashcard] object to display. Can be null if no card is available.
+ * @param modifier The [Modifier] to be applied to the Card.
+ */
 @Composable
 fun FlashcardCard(
     flashcard: Flashcard?,
@@ -75,6 +90,13 @@ fun FlashcardCard(
     }
 }
 
+/**
+ * Composable function that represents a single face of a flashcard.
+ * It displays text content within a Box layout, centered both horizontally and vertically.
+ *
+ * @param modifier Modifier for this composable. Defaults to Modifier.
+ * @param text The text to be displayed on the card face.
+ */
 @Composable
 fun CardFace(modifier: Modifier = Modifier, text: String) {
     Box(

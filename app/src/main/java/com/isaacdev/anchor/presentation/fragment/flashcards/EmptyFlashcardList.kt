@@ -20,6 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/**
+ * A Composable function that displays a message indicating that the flashcard list is empty or an error occurred.
+ *
+ * This function provides a user-friendly way to inform the user when there are no flashcards to display
+ * or when an error prevented the flashcards from loading. It includes options to retry loading or
+ * create a new flashcard.
+ *
+ * @param onCreateFlashcard A lambda function to be invoked when the user clicks the "Create Flashcard" button.
+ * @param onRetry A lambda function to be invoked when the user clicks the "Try Again" button (only visible if `hasError` is true).
+ * @param hasError A boolean indicating whether an error occurred while loading the flashcards. If true, an error message and a "Try Again" button will be shown.
+ * @param errorMessage An optional string containing a specific error message to display if `hasError` is true. If null, a generic error message will be used.
+ */
 @Composable
 fun EmptyFlashcardList(
     onCreateFlashcard: () -> Unit,

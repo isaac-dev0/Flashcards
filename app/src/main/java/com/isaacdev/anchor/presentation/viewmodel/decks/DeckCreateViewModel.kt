@@ -3,7 +3,6 @@ package com.isaacdev.anchor.presentation.viewmodel.decks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isaacdev.anchor.data.repositories.AuthRepository
-import com.isaacdev.anchor.data.repositories.DeckRepository
 import com.isaacdev.anchor.domain.models.Deck
 import com.isaacdev.anchor.domain.usecases.CreateDeckUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class DeckCreateViewModel @Inject constructor(
     private val createDeckUseCase: CreateDeckUseCase,
-    private val deckRepository: DeckRepository,
     authRepository: AuthRepository
 ): ViewModel() {
 
@@ -26,6 +24,23 @@ class DeckCreateViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DeckCreateUiState())
     val uiState: StateFlow<DeckCreateUiState> = _uiState.asStateFlow()
 
+    /**
+     * Creates a new deck with the given title and description.
+     *
+     * This function launches a coroutine in the viewModelScope to perform the deck creation asynchronously.
+     * It updates the UI state to indicate loading, then calls the `createDeckUseCase`.
+     *
+     * On successful deck creation:
+     *  - Updates the UI state with the newly created deck, sets loading to false, and clears any error message.
+     *  - Executes the `onSuccess` callback.
+     *
+     * On failure:
+     *  - Updates the UI state by setting loading to false and populating the error message.
+     *
+     * @param title The title of the deck to be created.
+     * @param description The description of the deck to be created.
+     * @param onSuccess A callback function to be executed when the deck is successfully created.
+     */
     fun createDeck(title: String, description: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -38,6 +53,10 @@ class DeckCreateViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears the error message in the UI state.
+     * This is typically called when the user dismisses an error message.
+     */
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
     }

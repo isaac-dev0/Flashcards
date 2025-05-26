@@ -39,6 +39,48 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.viewmodel.decks.DeckCreateViewModel
 
+/**
+ * Composable function for the Deck Creation screen.
+ *
+ * This screen allows users to input a title and an optional description to create a new deck.
+ * It handles form validation, displays error messages, and communicates with the [DeckCreateViewModel]
+ * to persist the new deck.
+ *
+ * The UI consists of:
+ * - An [OutlinedTextField] for the deck title.
+ * - An [OutlinedTextField] for the deck description (optional).
+ * - A character counter for the description.
+ * - An error message display area if any issues occur during deck creation or validation.
+ * - A "Cancel" button to navigate back.
+ * - A "Create Deck" button to submit the form.
+ *
+ * State Management:
+ * - `uiState`: Observed from the [DeckCreateViewModel], containing information about the current
+ *   deck being edited (if any), loading state, and error messages.
+ * - `deckTitle`: Local state for the deck title input field.
+ * - `deckDescription`: Local state for the deck description input field.
+ * - `titleError`: Local state to display validation errors for the title.
+ * - `descriptionError`: Local state to display validation errors for the description.
+ *
+ * Effects:
+ * - A [LaunchedEffect] observes changes in `uiState.deck`. If a deck is present in the UI state
+ *   (e.g., when editing an existing deck, though this screen is primarily for creation),
+ *   it populates the `deckTitle` and `deckDescription` fields.
+ *
+ * Validation:
+ * - The `validateForm` function checks:
+ *     - If the `deckTitle` is blank.
+ *     - If the `deckTitle` exceeds 100 characters.
+ *     - If the `deckDescription` exceeds 512 characters.
+ *   It updates `titleError` and `descriptionError` accordingly and returns `true` if the form is valid.
+ *
+ * User Actions:
+ * - Changing text in the title or description fields updates the respective local state and clears
+ *   any associated errors.
+ * - Clicking "Cancel" invokes the `onNavigateBack` callback.
+ * - Clicking "Create Deck":
+ *     - First, `validateForm()` is called.
+ */
 @Composable
 fun DeckCreateScreen(
     onDeckCreated: () -> Unit,

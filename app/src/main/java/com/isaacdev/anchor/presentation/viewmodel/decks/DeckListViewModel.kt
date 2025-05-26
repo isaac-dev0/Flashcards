@@ -25,6 +25,16 @@ class DeckListViewModel @Inject constructor(
         loadDecks()
     }
 
+    /**
+     * Loads the list of decks from the repository.
+     *
+     * This function launches a coroutine in the viewModelScope.
+     * It first updates the UI state to indicate that loading is in progress and clears any previous error messages.
+     * Then, it calls the `getDecks()` method from the `deckRepository`.
+     * - On success, it updates the UI state to indicate that loading has finished and clears any error messages.
+     * - On failure, it updates the UI state to indicate that loading has finished and sets the error message
+     *   to the message from the encountered error.
+     */
     fun loadDecks() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
@@ -35,6 +45,15 @@ class DeckListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Deletes a deck from the repository.
+     *
+     * This function launches a coroutine in the viewModelScope to perform the delete operation
+     * asynchronously. It calls the `deleteDeck` method of the `deckRepository`.
+     * If the deletion fails, it updates the `_uiState` with the error message.
+     *
+     * @param deckId The ID of the deck to be deleted.
+     */
     fun deleteDeck(deckId: String) {
         viewModelScope.launch {
             deckRepository.deleteDeck(deckId)
@@ -42,6 +61,11 @@ class DeckListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Clears the error message in the UI state.
+     * This function is typically called when the user has acknowledged an error
+     * or when a new operation is initiated that should clear any previous errors.
+     */
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
     }

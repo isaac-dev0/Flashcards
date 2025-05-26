@@ -3,7 +3,6 @@ package com.isaacdev.anchor.presentation.screen.flashcards
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,11 +11,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,6 +29,19 @@ import com.isaacdev.anchor.presentation.fragment.flashcards.EmptyFlashcardList
 import com.isaacdev.anchor.presentation.fragment.flashcards.FlashcardItem
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardListViewModel
 
+/**
+ * Composable function that displays the list of flashcards for a given deck.
+ *
+ * This screen shows a list of flashcards, allowing users to create, select, edit, and review them.
+ * It handles loading states, empty states, and error messages.
+ *
+ * @param deckId The ID of the deck whose flashcards are to be displayed.
+ * @param onCreateFlashcard Callback invoked when the user wants to create a new flashcard.
+ * @param onSelectedFlashcard Callback invoked when a flashcard is selected. It receives the ID of the selected flashcard.
+ * @param onEditFlashcard Callback invoked when the user wants to edit a flashcard. It receives the ID of the flashcard to be edited.
+ * @param onReview Callback invoked when the user wants to start a review session for the current deck. It receives the ID of the deck.
+ * @param viewModel The [FlashcardListViewModel] used to manage the state and logic for this screen. Defaults to a Hilt-injected instance.
+ */
 @Composable
 fun FlashcardListScreen(
     deckId: String,

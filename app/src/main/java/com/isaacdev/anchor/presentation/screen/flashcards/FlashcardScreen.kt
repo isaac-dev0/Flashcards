@@ -15,6 +15,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.fragment.flashcards.FlashcardCard
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardViewModel
 
+/**
+ * Composable function that displays a single flashcard.
+ *
+ * This screen is responsible for loading and displaying a flashcard based on the provided
+ * `deckId` and `flashcardId`. It utilizes a [FlashcardViewModel] to manage the state
+ * and fetch flashcard data.
+ *
+ * The UI displays a loading indicator while the flashcard is being fetched. Once loaded,
+ * the [FlashcardCard] composable is used to display the flashcard content. If an error
+ * occurs during loading, an error message is shown. If no data is available (e.g., initial state),
+ * an "Idle/No Data" message is displayed.
+ *
+ * @param deckId The ID of the deck to which the flashcard belongs.
+ * @param flashcardId The ID of the flashcard to display.
+ * @param viewModel The [FlashcardViewModel] instance used to manage the UI state and data fetching.
+ *                  Defaults to an instance provided by Hilt.
+ */
 @Composable
 fun FlashcardScreen(
     deckId: String,

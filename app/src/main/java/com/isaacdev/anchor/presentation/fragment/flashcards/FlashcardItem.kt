@@ -29,6 +29,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.isaacdev.anchor.domain.models.Flashcard
 
+/**
+ * A Composable function that displays a single flashcard item.
+ *
+ * This function renders a Card containing the flashcard's question and difficulty.
+ * It also provides options to edit or delete the flashcard.
+ *
+ * @param flashcard The [Flashcard] object to display.
+ * @param onSelectedFlashcard A lambda function that is invoked when the flashcard item is clicked. It receives the ID of the selected flashcard.
+ * @param onEditFlashcard A lambda function that is invoked when the edit button for the flashcard is clicked. It receives the ID of the flashcard to be edited.
+ * @param onDeleteFlashcard A lambda function that is invoked when the delete button for the flashcard is confirmed. It receives the ID of the flashcard to be deleted.
+ */
 @Composable
 fun FlashcardItem(
     flashcard: Flashcard,
