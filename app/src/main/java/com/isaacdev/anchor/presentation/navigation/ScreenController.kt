@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -292,7 +293,7 @@ fun AppTopBar(
                     Text(currentScreen.title)
                 }
                 if (isLoggedIn) {
-                    Column {
+                    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                         IconButton(onClick = { onSignOut() }) {
                             Icon(
                                 imageVector = Icons.Default.ExitToApp,

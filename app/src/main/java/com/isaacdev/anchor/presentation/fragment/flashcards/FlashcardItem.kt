@@ -24,10 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.isaacdev.anchor.domain.models.Flashcard
-import com.isaacdev.anchor.utils.formatDate
 
 @Composable
 fun FlashcardItem(
@@ -43,7 +43,10 @@ fun FlashcardItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelectedFlashcard(flashcard.id) },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -56,13 +59,14 @@ fun FlashcardItem(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = flashcard.question,
+                        fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
 
                     Text(
-                        text = "Created: ${formatDate(flashcard.createdAt)}",
+                        text = "Difficulty: ${flashcard.difficulty.toString()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 8.dp)

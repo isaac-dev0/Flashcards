@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.data.repositories.implementations.AuthState
 import com.isaacdev.anchor.domain.validators.isEmailValid
+import com.isaacdev.anchor.presentation.theme.AnchorTheme
 import com.isaacdev.anchor.presentation.viewmodel.auth.AuthViewModel
 
 @Composable
@@ -73,7 +74,6 @@ fun AuthScreen(
         }
         passwordError = when {
             password.isBlank() -> "Password cannot be empty"
-//            !password.isPasswordValid() -> "Password must be at least 8 characters long and contain at least one letter and one number."
             else -> null
         }
 

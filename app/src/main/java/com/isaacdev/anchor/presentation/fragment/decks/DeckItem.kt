@@ -24,10 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.isaacdev.anchor.domain.models.Deck
-import com.isaacdev.anchor.utils.formatDate
 
 @Composable
 fun DeckItem(
@@ -42,7 +42,11 @@ fun DeckItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelectedDeck(deck.id) },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -56,6 +60,7 @@ fun DeckItem(
                     Text(
                         text = deck.title,
                         style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -70,13 +75,6 @@ fun DeckItem(
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-
-                    Text(
-                        text = "Created: ${formatDate(deck.createdAt)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
                 }
 
                 Row {

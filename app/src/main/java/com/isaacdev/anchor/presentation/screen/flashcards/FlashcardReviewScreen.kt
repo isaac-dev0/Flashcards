@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.isaacdev.anchor.presentation.fragment.flashcards.FlashcardCard
 import com.isaacdev.anchor.presentation.viewmodel.flashcards.FlashcardReviewViewModel
+import kotlin.math.max
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -37,6 +40,7 @@ fun FlashcardReviewScreen(
     val uiState by viewModel.uiState.collectAsState()
     val currentCard by viewModel.currentCard.collectAsState()
     val isReviewFinished by viewModel.isReviewFinished.collectAsState()
+    val remainingTime by viewModel.remainingTime.collectAsState()
 
     LaunchedEffect(deckId) {
         viewModel.startReview(deckId)
@@ -72,6 +76,13 @@ fun FlashcardReviewScreen(
                         .fillMaxHeight()
                         .padding(16.dp)
                 ) {
+                    LinearProgressIndicator(
+                        progress = { max(0f, 1f - (remainingTime.toFloat() / 30f)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.tertiaryContainer
+                    )
+                    Text("$remainingTime seconds remaining")
+
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxWidth(),
