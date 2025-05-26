@@ -1,7 +1,6 @@
 package com.isaacdev.anchor.data.repositories.implementations
 
 import android.util.Log
-import com.isaacdev.anchor.data.database.SupabaseClient
 import com.isaacdev.anchor.data.modules.IoDispatcher
 import com.isaacdev.anchor.domain.exceptions.DeckException
 import com.isaacdev.anchor.data.repositories.DeckRepository

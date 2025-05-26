@@ -38,5 +38,5 @@ class FlashcardViewModel @Inject constructor(
 data class FlashcardUiState(
     val flashcard: Flashcard? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )

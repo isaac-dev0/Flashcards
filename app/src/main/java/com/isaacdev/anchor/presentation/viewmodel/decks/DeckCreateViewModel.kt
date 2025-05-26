@@ -26,33 +26,11 @@ class DeckCreateViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DeckCreateUiState())
     val uiState: StateFlow<DeckCreateUiState> = _uiState.asStateFlow()
 
-    fun loadDeck(id: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            deckRepository.getDeck(id)
-                .onSuccess { deck -> _uiState.update { it.copy(deck = deck, isLoading = false, errorMessage = null) } }
-                .onFailure { error -> _uiState.update { it.copy(isLoading = false, errorMessage = error.message) } }
-        }
-    }
-
     fun createDeck(title: String, description: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             createDeckUseCase(title, description)
-                .onSuccess { deck -> _uiState.update { it.copy(deck = deck, isLoading = false, errorMessage = null) }
-                    onSuccess()
-                }
-                .onFailure { error -> _uiState.update { it.copy(isLoading = false, errorMessage = error.message) } }
-        }
-    }
-
-    fun editDeck(deck: Deck, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-
-            deckRepository.editDeck(deck)
                 .onSuccess { deck -> _uiState.update { it.copy(deck = deck, isLoading = false, errorMessage = null) }
                     onSuccess()
                 }
@@ -68,5 +46,5 @@ class DeckCreateViewModel @Inject constructor(
 data class DeckCreateUiState(
     val deck: Deck? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )

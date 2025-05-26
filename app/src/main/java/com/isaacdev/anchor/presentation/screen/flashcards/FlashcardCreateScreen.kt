@@ -174,7 +174,7 @@ fun FlashcardCreateScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        uiState.errorMessage?.let { error ->
+        if (uiState.errorMessage != null) {
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer
@@ -194,7 +194,7 @@ fun FlashcardCreateScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     )
                     Text(
-                        text = error,
+                        text = uiState.errorMessage!!,
                         color = MaterialTheme.colorScheme.onErrorContainer,
                         modifier = Modifier.weight(1f)
                     )

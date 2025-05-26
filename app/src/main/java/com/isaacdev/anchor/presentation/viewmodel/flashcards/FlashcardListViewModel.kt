@@ -45,5 +45,5 @@ class FlashcardListViewModel @Inject constructor(
 
 data class FlashcardListUiState(
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )

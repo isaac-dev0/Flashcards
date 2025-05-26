@@ -49,5 +49,5 @@ class DeckListViewModel @Inject constructor(
 
 data class DeckListUiState(
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )

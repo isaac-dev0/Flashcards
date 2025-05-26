@@ -102,7 +102,7 @@ fun FlashcardListScreen(
             )
         }
 
-        uiState.errorMessage?.let { error ->
+        if (uiState.errorMessage != null) {
             Snackbar(
                 modifier = Modifier
                     .padding(16.dp)
@@ -113,7 +113,7 @@ fun FlashcardListScreen(
                     }
                 }
             ) {
-                Text(text = error)
+                Text(text = uiState.errorMessage!!)
             }
         }
     }

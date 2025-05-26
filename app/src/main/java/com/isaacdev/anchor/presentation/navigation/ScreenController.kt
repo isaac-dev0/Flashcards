@@ -124,8 +124,8 @@ fun ScreenController(
                             Screen.FlashcardList.route + "?deckId=$deckId"
                         )
                     },
-                    onEditDeck = {
-                        navController.navigate(Screen.EditDeck.route)
+                    onEditDeck = { deckId ->
+                        navController.navigate(Screen.EditDeck.route + deckId)
                     }
                 )
             }

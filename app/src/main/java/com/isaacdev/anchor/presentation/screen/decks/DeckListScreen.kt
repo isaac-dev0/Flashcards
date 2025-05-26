@@ -88,7 +88,7 @@ fun DeckListScreen(
             )
         }
 
-        uiState.errorMessage?.let { error ->
+        if (uiState.errorMessage != null) {
             Snackbar(
                 modifier = Modifier
                     .padding(16.dp)
@@ -99,7 +99,7 @@ fun DeckListScreen(
                     }
                 }
             ) {
-                Text(text = error)
+                Text(text = uiState.errorMessage!!)
             }
         }
     }

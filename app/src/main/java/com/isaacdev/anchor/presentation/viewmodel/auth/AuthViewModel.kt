@@ -78,7 +78,7 @@ class AuthViewModel @Inject constructor(
 data class AuthUiState(
     val authState: AuthState = AuthState.Loading,
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )
 
 private fun <T> kotlinx.coroutines.flow.Flow<T>.stateFlowIn(

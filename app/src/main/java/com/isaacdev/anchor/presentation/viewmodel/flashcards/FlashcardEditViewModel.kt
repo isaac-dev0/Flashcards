@@ -57,5 +57,5 @@ class FlashcardEditViewModel @Inject constructor(
 data class FlashcardEditUiState(
     val flashcard: Flashcard? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )

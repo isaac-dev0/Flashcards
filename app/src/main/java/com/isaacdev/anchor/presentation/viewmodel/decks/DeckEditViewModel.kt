@@ -56,5 +56,5 @@ class DeckEditViewModel @Inject constructor(
 data class DeckEditUiState(
     val deck: Deck? = null,
     val isLoading: Boolean = false,
-    val errorMessage: String? = ""
+    val errorMessage: String? = null
 )
